@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  server:
+    build: .
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    networks:
+      - gotodo
+    env_file:
+      - .env
+    depends_on:
+      - database
+
+  database:
+    image: mariadb:latest
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    networks:
+      - gotodo
+    volumes:
+      # volume for database to keep data after container is stopped or crashed
+      - ./db-volume:/var/lib/mysql
+    environment:
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    networks:
+      - gotodo
+    environment:
+      # Adminer customization
+      - ADMINER_DESIGN=dracula
+      - ADMINER_TITLE="Go-todo database"
+      - ADMINER_DEFAULT_DATABASE=database
+    depends_on:
+      - database
+  
+
+networks:
+  gotodo:
