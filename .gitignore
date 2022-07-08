@@ -16,3 +16,7 @@
 
 # Database volume
 db-volume/
+
+# Environment variables
+.env
+!.env.example

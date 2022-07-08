@@ -12,6 +12,7 @@ services:
       # volume for database to keep data after container is stopped or crashed
       - ./db-volume:/var/lib/mysql
     environment:
+      - MARIADB_DATABASE=gotodo
       - MARIADB_USER=${DB_USER}
       - MARIADB_PASSWORD=${DB_PASSWORD}
       - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
