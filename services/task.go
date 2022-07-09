@@ -15,6 +15,7 @@ const YYYYMMDD = "2006-01-02"
 type TaskService interface {
 	SelectAll() []models.Task
 	SelectByID(id uint) models.Task
+	SelectByTitle(title string) []models.Task
 	SelectForToday() []models.Task
 	SelectForTomorrow() []models.Task
 	SelectForThisWeek() []models.Task
@@ -43,6 +44,12 @@ func (r *taskService) SelectAll() []models.Task {
 func (r *taskService) SelectByID(id uint) models.Task {
 	var task models.Task
 	r.db.First(&task, id)
+	return task
+}
+
+func (r *taskService) SelectByTitle(title string) []models.Task {
+	var task []models.Task
+	r.db.Where("title = ?", title).Find(&task)
 	return task
 }
 

@@ -1,16 +1,16 @@
 FROM alpine:latest AS base
 WORKDIR /app
 
-FROM go:latest AS build
+FROM golang:1.18.3-alpine AS build
 WORKDIR /src
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
 COPY . .
-RUN go build -o ./build/app main.go
+RUN go build -o /src/build/app
 
 FROM base AS final
 WORKDIR /app
-COPY --from=build /src/build/ .
+COPY --from=build /src/build .
 EXPOSE 3000
-CMD [ "app" ]
+ENTRYPOINT ["/app/app"]

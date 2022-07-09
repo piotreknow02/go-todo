@@ -24,6 +24,12 @@ func (c *TaskController) GetIdBy(id uint) {
 	c.Ctx.JSON(task)
 }
 
+// /task/title/:title
+func (c *TaskController) GetTitleBy(title string) {
+	tasks := c.Service.SelectByTitle(title)
+	c.Ctx.JSON(tasks)
+}
+
 // /task/today
 func (c *TaskController) GetToday() {
 	tasks := c.Service.SelectForToday()
