@@ -2,6 +2,7 @@ package services
 
 import (
 	"go-todo/models"
+
 	"time"
 
 	"gorm.io/gorm"
@@ -13,14 +14,14 @@ const YYYYMMDD = "2006-01-02"
 // Types
 type TaskService interface {
 	SelectAll() []models.Task
-	SelectByID(id int) models.Task
+	SelectByID(id uint) models.Task
 	SelectForToday() []models.Task
 	SelectForTomorrow() []models.Task
 	SelectForThisWeek() []models.Task
 	Insert(task models.Task)
 	Update(task models.Task)
-	Delete(id int)
-	MarkAsComplete(task models.Task)
+	Delete(id uint)
+	MarkAsComplete(id uint)
 }
 
 type taskService struct {
@@ -39,7 +40,7 @@ func (r *taskService) SelectAll() []models.Task {
 	return tasks
 }
 
-func (r *taskService) SelectByID(id int) models.Task {
+func (r *taskService) SelectByID(id uint) models.Task {
 	var task models.Task
 	r.db.First(&task, id)
 	return task
@@ -68,14 +69,26 @@ func (r *taskService) Insert(task models.Task) {
 }
 
 func (r *taskService) Update(task models.Task) {
-	r.db.Save(&task)
+	taskToUpdate := r.db.Find(&task.ID)
+	if len(task.Title) > 0 {
+		taskToUpdate.UpdateColumn("title", task.Title)
+	}
+	if len(task.Description) > 0 {
+		taskToUpdate.UpdateColumn("description", task.Description)
+	}
+	if task.ExpiryDate.IsZero() {
+		taskToUpdate.UpdateColumn("expiry_date", task.ExpiryDate)
+	}
+	taskToUpdate.UpdateColumn("complete", task.Complete)
 }
 
-func (r *taskService) Delete(id int) {
+func (r *taskService) Delete(id uint) {
 	r.db.Delete(&models.Task{}, id)
 }
 
-func (r *taskService) MarkAsComplete(task models.Task) {
+func (r *taskService) MarkAsComplete(id uint) {
+	var task models.Task
+	r.db.First(&task, id)
 	task.Complete = 100
 	r.db.Save(&task)
 }

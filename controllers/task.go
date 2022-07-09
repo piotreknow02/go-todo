@@ -19,7 +19,7 @@ func (c *TaskController) GetAll() {
 }
 
 // /task/id/:id
-func (c *TaskController) GetIdBy(id int) {
+func (c *TaskController) GetIdBy(id uint) {
 	task := c.Service.SelectByID(id)
 	c.Ctx.JSON(task)
 }
@@ -69,19 +69,11 @@ func (c *TaskController) PostUpdate() {
 }
 
 // /task/delete/:id
-func (c *TaskController) DeleteIdBy(id int) {
+func (c *TaskController) GetDeleteBy(id uint) {
 	c.Service.Delete(id)
 }
 
-// /task/markascomplete
-func (c *TaskController) PostMarkascomplete() {
-	var task models.Task
-	err := c.Ctx.ReadJSON(&task)
-	if err != nil {
-		c.Ctx.StatusCode(iris.StatusBadRequest)
-		c.Ctx.JSON(iris.Map{"error": err.Error()})
-		return
-	}
-	c.Service.MarkAsComplete(task)
-	c.Ctx.JSON(task)
+// /task/markascomplete/:id
+func (c *TaskController) GetMarkascompleteBy(id uint) {
+	c.Service.MarkAsComplete(id)
 }
