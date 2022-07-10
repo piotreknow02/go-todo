@@ -13,11 +13,8 @@ func GetDatabase() (*gorm.DB, error) {
 	err := godotenv.Load()
 	if err != nil {
 		// If .env file is not found in cwd, load from the directory above (needed for tests)
-		err := godotenv.Load("../.env")
-		if err != nil {
-			// If .env file is not found also in the directory above, return an error
-			return nil, err
-		}
+		godotenv.Load("../.env")
+		// If .env file is not found also in the directory above, ignore it
 	}
 
 	// Data needed for connection string

@@ -12,5 +12,6 @@ RUN go build -o /src/build/app
 FROM base AS final
 WORKDIR /app
 COPY --from=build /src/build .
+RUN chmod +x ./app
 EXPOSE 3000
-ENTRYPOINT ["/app/app"]
+ENTRYPOINT ["./app"]
